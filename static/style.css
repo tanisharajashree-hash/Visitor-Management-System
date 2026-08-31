@@ -87,3 +87,185 @@ button:hover {
     text-align:center;
     margin-bottom:15px;
 }
+
+/* ================= DASHBOARD ================= */
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f6f9;
+}
+
+
+/* Sidebar */
+
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 240px;
+    height: 100vh;
+    background: #172554;
+    color: white;
+    padding: 25px 15px;
+    box-sizing: border-box;
+}
+
+.sidebar h2 {
+    text-align: center;
+    margin: 0;
+    font-size: 30px;
+}
+
+.system-name {
+    text-align: center;
+    font-size: 13px;
+    margin-bottom: 30px;
+    opacity: 0.8;
+}
+
+.sidebar a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    padding: 13px 15px;
+    margin: 5px 0;
+    border-radius: 8px;
+}
+
+.sidebar a:hover,
+.sidebar a.active {
+    background: #2563eb;
+}
+
+.sidebar .logout {
+    margin-top: 30px;
+    background: #dc2626;
+}
+
+
+/* Main Content */
+
+.main-content {
+    margin-left: 240px;
+    padding: 30px;
+}
+
+
+/* Top Bar */
+
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.top-bar h1 {
+    margin: 0;
+    color: #172554;
+}
+
+.top-bar p {
+    color: #64748b;
+}
+
+.admin {
+    background: white;
+    padding: 12px 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px #ddd;
+}
+
+
+/* Cards */
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.card {
+    background: white;
+    padding: 22px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 2px 10px #ddd;
+}
+
+.card-icon {
+    font-size: 32px;
+}
+
+.card p {
+    margin: 0;
+    color: #64748b;
+}
+
+.card h2 {
+    margin: 7px 0 0;
+    color: #172554;
+}
+
+
+/* Sections */
+
+.section {
+    margin-top: 35px;
+}
+
+.section h2 {
+    color: #172554;
+}
+
+
+/* Quick Actions */
+
+.actions {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.action {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    display: flex;
+    gap: 18px;
+    align-items: center;
+    text-decoration: none;
+    color: #172554;
+    box-shadow: 0 2px 10px #ddd;
+}
+
+.action:hover {
+    transform: translateY(-2px);
+}
+
+.action span {
+    font-size: 35px;
+}
+
+.action h3 {
+    margin: 0 0 5px;
+}
+
+.action p {
+    margin: 0;
+    color: #64748b;
+}
+
+
+/* Recent Activity */
+
+.activity-box {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    color: #64748b;
+    box-shadow: 0 2px 10px #ddd;
+}
