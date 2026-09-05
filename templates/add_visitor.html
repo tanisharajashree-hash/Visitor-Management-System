@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Visitor - Visitor Management System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Add Visitor</h1>
+    <p>Enter visitor details below</p>
+
+    <form method="POST" action="{{ url_for('add_visitor') }}">
+
+        <label>Visitor Name</label>
+        <input type="text" name="name" required>
+
+        <label>Phone Number</label>
+        <input type="text" name="phone" required>
+
+        <label>Email</label>
+        <input type="email" name="email" required>
+
+        <label>Purpose of Visit</label>
+        <input type="text" name="purpose" required>
+
+        <button type="submit">Add Visitor</button>
+
+    </form>
+
+    <br>
+
+    <a href="{{ url_for('visitors') }}">← Back to Visitors</a>
+
+</div>
+
+</body>
+</html>

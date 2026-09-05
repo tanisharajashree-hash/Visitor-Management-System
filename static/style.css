@@ -269,3 +269,18 @@ body {
     color: #64748b;
     box-shadow: 0 2px 10px #ddd;
 }
+
+.add-btn {
+    display: inline-block;
+    padding: 10px 25px;
+    background-color: #6c4ccf;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.add-btn:hover {
+    background-color: #5638b5;
+}
