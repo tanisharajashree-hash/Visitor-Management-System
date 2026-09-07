@@ -50,12 +50,15 @@
 
 
         <!-- Search -->
-        <div class="search-box">
-            <input
-                type="text"
-                placeholder="🔍 Search visitors..."
-            >
-        </div>
+       <form method="GET" action="{{ url_for('visitors') }}" class="search-box">
+       <input
+           type="text"
+           name="search"
+           placeholder="🔍 Search visitors..."
+           value="{{ search }}"
+        >
+        <button type="submit">Search</button>
+        </form>
 
 
         <!-- Visitor Table -->

@@ -48,15 +48,33 @@ def dashboard():
 @app.route("/visitors")
 def visitors():
 
+    search = request.args.get("search", "")
+
     cursor = db.cursor(dictionary=True)
 
-    cursor.execute("SELECT * FROM visitor")
+    if search:
+        cursor.execute(
+            """
+            SELECT * FROM visitor
+            WHERE name LIKE %s
+               OR phone LIKE %s
+               OR email LIKE %s
+            """,
+            (f"%{search}%", f"%{search}%", f"%{search}%")
+        )
+    else:
+        cursor.execute("SELECT * FROM visitor")
 
     visitors = cursor.fetchall()
 
     cursor.close()
 
-    return render_template("visitors.html", visitors=visitors)
+    return render_template(
+        "visitors.html",
+        visitors=visitors,
+        search=search
+    )
+
 
 @app.route("/view-visitor/<int:visitor_id>")
 def view_visitor(visitor_id):
