@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>View Request - Visitor Management System</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Visit Request Details</h1>
+    <p>View visitor request information</p>
+
+    <hr>
+
+    <p>
+        <strong>Request ID:</strong>
+        R{{ "%03d" | format(req.request_id) }}
+    </p>
+
+    <p>
+        <strong>Visitor ID:</strong>
+        V{{ "%03d" | format(req.visitor_id) }}
+    </p>
+
+    <p>
+        <strong>Visitor Name:</strong>
+        {{ req.name }}
+    </p>
+
+    <p>
+        <strong>Phone:</strong>
+        {{ req.phone }}
+    </p>
+
+    <p>
+        <strong>Email:</strong>
+        {{ req.email }}
+    </p>
+
+    <p>
+        <strong>Visit Date:</strong>
+        {{ req.visit_date }}
+    </p>
+
+    <p>
+        <strong>Purpose:</strong>
+        {{ req.purpose }}
+    </p>
+
+    <p>
+        <strong>Status:</strong>
+        {{ req.status }}
+    </p>
+
+    <p>
+        <strong>Request Time:</strong>
+        {{ req.request_time }}
+    </p>
+
+    <br>
+
+    <a href="{{ url_for('visit_requests') }}">
+        ← Back to Visit Requests
+    </a>
+
+</div>
+
+</body>
+</html>

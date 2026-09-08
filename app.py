@@ -75,6 +75,22 @@ def visitors():
         search=search
     )
 
+@app.route("/visit-requests")
+def visit_requests():
+
+    cursor = db.cursor(dictionary=True)
+
+    cursor.execute("SELECT * FROM visit_request")
+
+    requests = cursor.fetchall()
+
+    cursor.close()
+
+    return render_template(
+        "visit_requests.html",
+        requests=requests
+    )
+
 
 @app.route("/view-visitor/<int:visitor_id>")
 def view_visitor(visitor_id):
@@ -173,6 +189,82 @@ def add_visitor():
         return redirect(url_for("visitors"))
 
     return render_template("add_visitor.html")
+
+@app.route("/new-request", methods=["GET", "POST"])
+def new_request():
+
+    cursor = db.cursor(dictionary=True)
+
+    if request.method == "POST":
+
+        visitor_id = request.form["visitor_id"]
+        visit_date = request.form["visit_date"]
+        purpose = request.form["purpose"]
+
+        cursor.execute(
+            """
+            INSERT INTO visit_request
+            (visitor_id, visit_date, purpose, status, request_time)
+            VALUES (%s, %s, %s, %s, NOW())
+            """,
+            (visitor_id, visit_date, purpose, "Pending")
+        )
+
+        db.commit()
+        cursor.close()
+
+        return redirect(url_for("visit_requests"))
+
+    cursor.execute("SELECT visitor_id, name FROM visitor")
+    visitors = cursor.fetchall()
+
+    cursor.close()
+
+    return render_template(
+        "new_request.html",
+        visitors=visitors
+    )
+
+@app.route("/approve-request/<int:request_id>")
+def approve_request(request_id):
+    cursor = db.cursor()
+    cursor.execute(
+        "UPDATE visit_request SET status = %s WHERE request_id = %s",
+        ("Approved", request_id)
+    )
+    db.commit()
+    cursor.close()
+    return redirect(url_for("visit_requests"))
+
+@app.route("/reject-request/<int:request_id>")
+def reject_request(request_id):
+    cursor = db.cursor()
+    cursor.execute(
+        "UPDATE visit_request SET status = %s WHERE request_id = %s",
+        ("Rejected", request_id)
+    )
+    db.commit()
+    cursor.close()
+    return redirect(url_for("visit_requests"))
+
+@app.route("/view-request/<int:request_id>")
+def view_request(request_id):
+    cursor = db.cursor(dictionary=True)
+
+    cursor.execute(
+        """
+        SELECT visit_request.*, visitor.name, visitor.phone, visitor.email
+        FROM visit_request
+        JOIN visitor ON visit_request.visitor_id = visitor.visitor_id
+        WHERE visit_request.request_id = %s
+        """,
+        (request_id,)
+    )
+
+    req = cursor.fetchone()
+    cursor.close()
+
+    return render_template("view_request.html", req=req)
 
 if __name__ == "__main__":
     app.run(debug=True)

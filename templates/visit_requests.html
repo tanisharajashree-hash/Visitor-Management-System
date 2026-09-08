@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Visit Requests - Visitor Management System</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+
+        <div class="logo">
+            <h2>VMS</h2>
+            <p>Visitor Management</p>
+        </div>
+
+        <nav>
+            <a href="{{ url_for('dashboard') }}">🏠 Dashboard</a>
+
+            <a href="{{ url_for('visitors') }}">👤 Visitors</a>
+
+            <a href="{{ url_for('visit_requests') }}" class="active">
+                📋 Visit Requests
+            </a>
+
+            <a href="#">🎫 Gate Passes</a>
+            <a href="#">📝 Visitor Logs</a>
+            <a href="#">📊 Reports</a>
+            <a href="#">⚙️ Settings</a>
+        </nav>
+
+        <a href="/" class="logout">🚪 Logout</a>
+
+    </aside>
+
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+        <div class="page-header">
+            <div>
+                <h1>Visit Requests</h1>
+                <p>Manage visitor visit requests</p>
+            </div>
+
+            <a href="{{ url_for('new_request') }}" class="add-btn">+ New Request</a>
+        </div>
+
+
+        <!-- Search -->
+        <div class="search-box">
+
+            <input
+                type="text"
+                placeholder="🔍 Search requests..."
+            >
+
+        </div>
+
+
+        <!-- Request Table -->
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Request ID</th>
+                        <th>Visitor ID</th>
+                        <th>Visit Date</th>
+                        <th>Purpose</th>
+                        <th>Status</th>
+                        <th>Request Time</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+               <tbody>
+               {% for req in requests %}
+               <tr>
+                  <td>R{{ "%03d" | format(req.request_id) }}</td>
+                  <td>V{{ "%03d" | format(req.visitor_id) }}</td>
+                  <td>{{ req.visit_date }}</td>
+                  <td>{{ req.purpose }}</td>
+                  <td>{{ req.status }}</td>
+                  <td>{{ req.request_time }}</td>
+                  <td>
+                      <a href="{{ url_for('view_request', request_id=req.request_id) }}" class="view-btn">View</a>
+                      <a href="{{ url_for('approve_request', request_id=req.request_id) }}" class="edit-btn">Approve</a>
+                      <a href="{{ url_for('reject_request', request_id=req.request_id) }}" class="delete-btn">Reject</a>
+                  </td>
+              </tr>
+              {% else %}
+              <tr>
+                  <td colspan="7" class="no-data">No visit requests found.</td>
+              </tr>
+              {% endfor %}
+          </tbody>
+
+            </table>
+
+        </div>
+
+    </main>
+
+</div>
+
+</body>
+</html>

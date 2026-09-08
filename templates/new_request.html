@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>New Visit Request - Visitor Management System</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+
+        <div class="logo">
+            <h2>VMS</h2>
+            <p>Visitor Management</p>
+        </div>
+
+        <nav>
+            <a href="{{ url_for('dashboard') }}">🏠 Dashboard</a>
+            <a href="{{ url_for('visitors') }}">👤 Visitors</a>
+            <a href="{{ url_for('visit_requests') }}" class="active">
+                📋 Visit Requests
+            </a>
+            <a href="#">🎫 Gate Passes</a>
+            <a href="#">📝 Visitor Logs</a>
+            <a href="#">📊 Reports</a>
+            <a href="#">⚙️ Settings</a>
+        </nav>
+
+        <a href="/" class="logout">🚪 Logout</a>
+
+    </aside>
+
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+        <div class="page-header">
+            <div>
+                <h1>New Visit Request</h1>
+                <p>Create a new visitor visit request</p>
+            </div>
+        </div>
+
+
+        <div class="form-container">
+
+            <form method="POST"
+                  action="{{ url_for('new_request') }}">
+
+                <label for="visitor_id">Select Visitor</label>
+
+                <select id="visitor_id" name="visitor_id" required>
+
+                    <option value="">-- Select Visitor --</option>
+
+                    {% for visitor in visitors %}
+                    <option value="{{ visitor.visitor_id }}">
+                        V{{ "%03d" | format(visitor.visitor_id) }}
+                        - {{ visitor.name }}
+                    </option>
+                    {% endfor %}
+
+                </select>
+
+
+                <label for="visit_date">Visit Date</label>
+
+                <input
+                    type="date"
+                    id="visit_date"
+                    name="visit_date"
+                    required
+                >
+
+
+                <label for="purpose">Purpose of Visit</label>
+
+                <input
+                    type="text"
+                    id="purpose"
+                    name="purpose"
+                    placeholder="Enter purpose of visit"
+                    required
+                >
+
+
+                <button type="submit">Create Request</button>
+
+            </form>
+
+
+            <br>
+
+            <a href="{{ url_for('visit_requests') }}">
+                ← Back to Visit Requests
+            </a>
+
+        </div>
+
+    </main>
+
+</div>
+
+</body>
+</html>
