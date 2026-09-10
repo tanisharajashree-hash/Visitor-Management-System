@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>View Gate Pass - Visitor Management System</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Gate Pass Details</h1>
+    <p>View gate pass information</p>
+
+    <hr>
+
+    <p>
+        <strong>Pass ID:</strong>
+        GP{{ "%03d" | format(gate_pass.pass_id) }}
+    </p>
+
+    <p>
+        <strong>Request ID:</strong>
+        R{{ "%03d" | format(gate_pass.request_id) }}
+    </p>
+
+    <p>
+        <strong>Visitor ID:</strong>
+        V{{ "%03d" | format(gate_pass.visitor_id) }}
+    </p>
+
+    <p>
+        <strong>Visitor Name:</strong>
+        {{ gate_pass.name }}
+    </p>
+
+    <p>
+        <strong>Issue Date:</strong>
+        {{ gate_pass.issue_date }}
+    </p>
+
+    <p>
+        <strong>Valid Time:</strong>
+        {{ gate_pass.valid_time }}
+    </p>
+
+    <p>
+        <strong>Status:</strong>
+        {{ gate_pass.status }}
+    </p>
+
+    <br>
+
+    <a href="{{ url_for('gate_passes') }}">
+        ← Back to Gate Passes
+    </a>
+
+</div>
+
+</body>
+</html>

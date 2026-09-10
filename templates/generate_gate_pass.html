@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Generate Gate Pass - Visitor Management System</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            <h2>VMS</h2>
+            <p>Visitor Management</p>
+        </div>
+
+        <nav>
+            <a href="{{ url_for('dashboard') }}">🏠 Dashboard</a>
+            <a href="{{ url_for('visitors') }}">👤 Visitors</a>
+            <a href="{{ url_for('visit_requests') }}">📋 Visit Requests</a>
+            <a href="{{ url_for('gate_passes') }}" class="active">🎫 Gate Passes</a>
+            <a href="#">📝 Visitor Logs</a>
+            <a href="#">📊 Reports</a>
+            <a href="#">⚙️ Settings</a>
+        </nav>
+
+        <a href="/" class="logout">🚪 Logout</a>
+
+    </aside>
+
+    <main class="main-content">
+
+        <div class="page-header">
+            <div>
+                <h1>Generate Gate Pass</h1>
+                <p>Create a gate pass for an approved visit request</p>
+            </div>
+        </div>
+
+        <div class="form-container">
+
+            <form method="POST"
+                  action="{{ url_for('generate_gate_pass') }}">
+
+                <label for="request_id">Approved Request</label>
+
+                <select id="request_id" name="request_id" required>
+                    <option value="">-- Select Request --</option>
+
+                    {% for req in requests %}
+                    <option value="{{ req.request_id }}">
+                        R{{ "%03d" | format(req.request_id) }}
+                        - V{{ "%03d" | format(req.visitor_id) }}
+                        - {{ req.name }}
+                    </option>
+                    {% endfor %}
+
+                </select>
+
+                <input type="hidden"
+                       name="visitor_id"
+                       id="visitor_id">
+
+                <label for="valid_time">Valid Time</label>
+
+                <input type="time"
+                       id="valid_time"
+                       name="valid_time"
+                       required>
+
+                <button type="submit">Generate Gate Pass</button>
+
+            </form>
+
+            <br>
+
+            <a href="{{ url_for('gate_passes') }}">
+                ← Back to Gate Passes
+            </a>
+
+        </div>
+
+    </main>
+
+</div>
+
+<script>
+    const requestSelect = document.getElementById("request_id");
+
+    const visitorIds = {
+        {% for req in requests %}
+        "{{ req.request_id }}": "{{ req.visitor_id }}",
+        {% endfor %}
+    };
+
+    requestSelect.addEventListener("change", function () {
+        document.getElementById("visitor_id").value =
+            visitorIds[this.value] || "";
+    });
+</script>
+
+</body>
+</html>

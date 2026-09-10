@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Gate Passes - Visitor Management System</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            <h2>VMS</h2>
+            <p>Visitor Management</p>
+        </div>
+
+        <nav>
+            <a href="{{ url_for('dashboard') }}">🏠 Dashboard</a>
+            <a href="{{ url_for('visitors') }}">👤 Visitors</a>
+            <a href="{{ url_for('visit_requests') }}">📋 Visit Requests</a>
+            <a href="{{ url_for('gate_passes') }}" class="active">🎫 Gate Passes</a>
+            <a href="#">📝 Visitor Logs</a>
+            <a href="#">📊 Reports</a>
+            <a href="#">⚙️ Settings</a>
+        </nav>
+
+        <a href="/" class="logout">🚪 Logout</a>
+
+    </aside>
+
+    <main class="main-content">
+
+        <div class="page-header">
+            <div>
+                <h1>Gate Passes</h1>
+                <p>Manage visitor gate passes</p>
+            </div>
+
+            <a href="#" class="add-btn">+ Generate Gate Pass</a>
+        </div>
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Pass ID</th>
+                        <th>Request ID</th>
+                        <th>Visitor ID</th>
+                        <th>Issue Date</th>
+                        <th>Valid Time</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                {% for pass in passes %}
+
+                <tr>
+                    <td>GP{{ "%03d" | format(pass.pass_id) }}</td>
+                    <td>R{{ "%03d" | format(pass.request_id) }}</td>
+                    <td>V{{ "%03d" | format(pass.visitor_id) }}</td>
+                    <td>{{ pass.issue_date }}</td>
+                    <td>{{ pass.valid_time }}</td>
+                    <td>{{ pass.status }}</td>
+                    <td>
+                        <a href="{{ url_for('view_gate_pass', pass_id=pass.pass_id) }}" class="view-btn">View</a>
+                    </td>
+                </tr>
+
+                {% else %}
+
+                <tr>
+                    <td colspan="7" class="no-data">
+                        No gate passes found.
+                    </td>
+                </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </main>
+
+</div>
+
+</body>
+</html>

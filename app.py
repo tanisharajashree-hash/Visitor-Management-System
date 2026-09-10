@@ -266,5 +266,80 @@ def view_request(request_id):
 
     return render_template("view_request.html", req=req)
 
+@app.route("/gate-passes")
+def gate_passes():
+    cursor = db.cursor(dictionary=True)
+
+    cursor.execute("SELECT * FROM gate_pass")
+
+    passes = cursor.fetchall()
+    cursor.close()
+
+    return render_template("gate_passes.html", passes=passes)
+
+@app.route("/generate-gate-pass", methods=["GET", "POST"])
+def generate_gate_pass():
+    cursor = db.cursor(dictionary=True)
+
+    if request.method == "POST":
+        request_id = request.form["request_id"]
+        visitor_id = request.form["visitor_id"]
+        valid_time = request.form["valid_time"]
+
+        cursor.execute(
+            """
+            INSERT INTO gate_pass
+            (request_id, visitor_id, issue_date, valid_time, status)
+            VALUES (%s, %s, CURDATE(), %s, %s)
+            """,
+            (request_id, visitor_id, valid_time, "Active")
+        )
+
+        db.commit()
+        cursor.close()
+
+        return redirect(url_for("gate_passes"))
+
+    cursor.execute(
+        """
+        SELECT visit_request.request_id,
+               visit_request.visitor_id,
+               visitor.name,
+               visit_request.visit_date,
+               visit_request.purpose
+        FROM visit_request
+        JOIN visitor
+        ON visit_request.visitor_id = visitor.visitor_id
+        WHERE visit_request.status = 'Approved'
+        """
+    )
+
+    requests = cursor.fetchall()
+    cursor.close()
+
+    return render_template(
+        "generate_gate_pass.html",
+        requests=requests
+    )
+
+@app.route("/view-gate-pass/<int:pass_id>")
+def view_gate_pass(pass_id):
+    cursor = db.cursor(dictionary=True)
+
+    cursor.execute(
+        """
+        SELECT gate_pass.*, visitor.name
+        FROM gate_pass
+        JOIN visitor ON gate_pass.visitor_id = visitor.visitor_id
+        WHERE gate_pass.pass_id = %s
+        """,
+        (pass_id,)
+    )
+
+    gate_pass = cursor.fetchone()
+    cursor.close()
+
+    return render_template("view_gate_pass.html", gate_pass=gate_pass)
+
 if __name__ == "__main__":
     app.run(debug=True)
