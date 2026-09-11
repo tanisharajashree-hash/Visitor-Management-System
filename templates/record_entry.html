@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Record Entry - Visitor Management System</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            <h2>VMS</h2>
+            <p>Visitor Management</p>
+        </div>
+
+        <nav>
+            <a href="{{ url_for('dashboard') }}">🏠 Dashboard</a>
+            <a href="{{ url_for('visitors') }}">👤 Visitors</a>
+            <a href="{{ url_for('visit_requests') }}">📋 Visit Requests</a>
+            <a href="{{ url_for('gate_passes') }}">🎫 Gate Passes</a>
+            <a href="{{ url_for('visit_logs') }}">📝 Visitor Logs</a>
+            <a href="#">📊 Reports</a>
+            <a href="#">⚙️ Settings</a>
+        </nav>
+
+        <a href="/" class="logout">🚪 Logout</a>
+
+    </aside>
+
+
+    <main class="main-content">
+
+        <div class="page-header">
+            <div>
+                <h1>Record Visitor Entry</h1>
+                <p>Record the entry of a visitor</p>
+            </div>
+        </div>
+
+
+        <div class="form-container">
+
+            <form method="POST"
+                  action="{{ url_for('record_entry') }}">
+
+                <label for="pass_id">Select Gate Pass</label>
+
+                <select name="pass_id" id="pass_id" required>
+
+                    <option value="">-- Select Gate Pass --</option>
+
+                    {% for pass in passes %}
+
+                    <option value="{{ pass.pass_id }}">
+                        GP{{ "%03d" | format(pass.pass_id) }}
+                        - V{{ "%03d" | format(pass.visitor_id) }}
+                        - {{ pass.name }}
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+
+                <label for="remarks">Remarks</label>
+
+                <textarea
+                    name="remarks"
+                    id="remarks"
+                    placeholder="Enter remarks (optional)"
+                    rows="4"></textarea>
+
+
+                <button type="submit" class="add-btn">
+                    Record Entry
+                </button>
+
+                <a href="{{ url_for('visit_logs') }}">
+                    ← Back to Visitor Logs
+                </a>
+
+            </form>
+
+        </div>
+
+    </main>
+
+</div>
+
+</body>
+</html>

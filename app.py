@@ -341,5 +341,82 @@ def view_gate_pass(pass_id):
 
     return render_template("view_gate_pass.html", gate_pass=gate_pass)
 
+@app.route("/visit-logs")
+def visit_logs():
+    cursor = db.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT visit_log.*, gate_pass.visitor_id
+        FROM visit_log
+        JOIN gate_pass
+        ON visit_log.pass_id = gate_pass.pass_id
+    """)
+
+    logs = cursor.fetchall()
+    cursor.close()
+
+    return render_template("visit_logs.html", logs=logs)
+
+@app.route("/record-entry", methods=["GET", "POST"])
+def record_entry():
+    cursor = db.cursor(dictionary=True)
+
+    if request.method == "POST":
+        pass_id = request.form["pass_id"]
+        remarks = request.form["remarks"]
+
+        cursor.execute(
+            """
+            INSERT INTO visit_log
+            (pass_id, in_time, out_time, remarks)
+            VALUES (%s, NOW(), NULL, %s)
+            """,
+            (pass_id, remarks)
+        )
+
+        db.commit()
+        cursor.close()
+
+        return redirect(url_for("visit_logs"))
+
+    cursor.execute(
+        """
+        SELECT gate_pass.pass_id,
+               gate_pass.visitor_id,
+               visitor.name
+        FROM gate_pass
+        JOIN visitor
+        ON gate_pass.visitor_id = visitor.visitor_id
+        WHERE gate_pass.status = 'Active'
+        """
+    )
+
+    passes = cursor.fetchall()
+    cursor.close()
+
+    return render_template(
+        "record_entry.html",
+        passes=passes
+    )
+
+@app.route("/record-exit/<int:log_id>")
+def record_exit(log_id):
+    cursor = db.cursor()
+
+    cursor.execute(
+        """
+        UPDATE visit_log
+        SET out_time = NOW()
+        WHERE log_id = %s
+          AND out_time IS NULL
+        """,
+        (log_id,)
+    )
+
+    db.commit()
+    cursor.close()
+
+    return redirect(url_for("visit_logs"))
+
 if __name__ == "__main__":
     app.run(debug=True)

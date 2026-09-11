@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Visitor Logs - Visitor Management System</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+
+        <div class="logo">
+            <h2>VMS</h2>
+            <p>Visitor Management</p>
+        </div>
+
+        <nav>
+            <a href="{{ url_for('dashboard') }}">🏠 Dashboard</a>
+
+            <a href="{{ url_for('visitors') }}">👤 Visitors</a>
+
+            <a href="{{ url_for('visit_requests') }}">
+                📋 Visit Requests
+            </a>
+
+            <a href="{{ url_for('gate_passes') }}">
+                🎫 Gate Passes
+            </a>
+
+            <a href="{{ url_for('visit_logs') }}" class="active">
+                📝 Visitor Logs
+            </a>
+
+            <a href="#">📊 Reports</a>
+
+            <a href="#">⚙️ Settings</a>
+        </nav>
+
+        <a href="/" class="logout">🚪 Logout</a>
+
+    </aside>
+
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+        <div class="page-header">
+
+            <div>
+                <h1>Visitor Logs</h1>
+                <p>Track visitor entry and exit details</p>
+            </div>
+
+            <a href="{{ url_for('record_entry') }}" class="add-btn">
+                + Record Entry
+            </a>
+
+        </div>
+
+
+        <!-- Logs Table -->
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Log ID</th>
+                        <th>Pass ID</th>
+                        <th>Visitor ID</th>
+                        <th>In Time</th>
+                        <th>Out Time</th>
+                        <th>Remarks</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for log in logs %}
+
+                    <tr>
+
+                        <td>
+                            L{{ "%03d" | format(log.log_id) }}
+                        </td>
+
+                        <td>
+                            GP{{ "%03d" | format(log.pass_id) }}
+                        </td>
+
+                        <td>
+                            V{{ "%03d" | format(log.visitor_id) }}
+                        </td>
+
+                        <td>
+                            {{ log.in_time }}
+                        </td>
+
+                        <td>
+                            {{ log.out_time or "Not Exited" }}
+                        </td>
+
+                        <td>
+                            {{ log.remarks or "-" }}
+                        </td>
+
+                        <td>
+                            <a href="#" class="view-btn">
+                                View
+                            </a>
+                             
+                             {% if not log.out_time %}
+                                <a href="{{ url_for('record_exit', log_id=log.log_id) }}" class="edit-btn">
+                                     Exit
+                                </a>
+                             {% endif %}
+                        </td>
+
+                    </tr>
+
+                    {% else %}
+
+                    <tr>
+                        <td colspan="7" class="no-data">
+                            No visitor logs found.
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </main>
+
+</div>
+
+</body>
+</html>
