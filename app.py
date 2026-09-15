@@ -418,5 +418,66 @@ def record_exit(log_id):
 
     return redirect(url_for("visit_logs"))
 
+@app.route("/reports")
+def reports():
+    search = request.args.get("search", "")
+    date = request.args.get("date", "")
+
+    cursor = db.cursor(dictionary=True)
+
+    query = """
+        SELECT visit_log.log_id,
+               gate_pass.pass_id,
+               visitor.visitor_id,
+               visitor.name,
+               visit_request.purpose,
+               visit_log.in_time,
+               visit_log.out_time,
+               visit_log.remarks
+        FROM visit_log
+        JOIN gate_pass
+        ON visit_log.pass_id = gate_pass.pass_id
+        JOIN visitor
+        ON gate_pass.visitor_id = visitor.visitor_id
+        JOIN visit_request
+        ON gate_pass.request_id = visit_request.request_id
+        WHERE 1=1
+    """
+
+    values = []
+
+    if search:
+        query += """
+            AND (
+                visitor.name LIKE %s
+                OR visitor.phone LIKE %s
+                OR visitor.email LIKE %s
+            )
+        """
+        values.extend([
+            f"%{search}%",
+            f"%{search}%",
+            f"%{search}%"
+        ])
+
+    if date:
+        query += " AND DATE(visit_log.in_time) = %s"
+        values.append(date)
+
+    query += " ORDER BY visit_log.in_time DESC"
+
+    cursor.execute(query, values)
+
+    reports = cursor.fetchall()
+    cursor.close()
+
+    return render_template(
+        "reports.html",
+        reports=reports,
+        search=search,
+        date=date
+    )
+
+
 if __name__ == "__main__":
     app.run(debug=True)

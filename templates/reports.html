@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Reports - Visitor Management System</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            <h2>VMS</h2>
+            <p>Visitor Management</p>
+        </div>
+
+        <nav>
+            <a href="{{ url_for('dashboard') }}">🏠 Dashboard</a>
+
+            <a href="{{ url_for('visitors') }}">👤 Visitors</a>
+
+            <a href="{{ url_for('visit_requests') }}">
+                📋 Visit Requests
+            </a>
+
+            <a href="{{ url_for('gate_passes') }}">
+                🎫 Gate Passes
+            </a>
+
+            <a href="{{ url_for('visit_logs') }}">
+                📝 Visitor Logs
+            </a>
+
+            <a href="{{ url_for('reports') }}" class="active">
+                📊 Reports
+            </a>
+
+            <a href="#">⚙️ Settings</a>
+        </nav>
+
+        <a href="/" class="logout">🚪 Logout</a>
+
+    </aside>
+
+
+    <main class="main-content">
+
+        <div class="page-header">
+
+            <div>
+                <h1>Visitor Reports</h1>
+                <p>View visitor entry and exit history</p>
+            </div>
+
+        </div>
+
+
+        <div class="filter-container">
+
+             <form method="GET" action="{{ url_for('reports') }}">
+
+                  <input
+                      type="text"
+                      name="search"
+                      placeholder="🔍 Search visitor..."
+                      value="{{ search }}"
+                  >
+
+                  <input
+                      type="date"
+                      name="date"
+                      value="{{ date }}"
+                  >
+
+                  <button type="submit" class="add-btn">
+                       Search
+                  </button>
+
+                  <a href="{{ url_for('reports') }}" class="view-btn">
+                       Clear
+                  </a>
+
+             </form>
+
+        </div>
+        
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Log ID</th>
+                        <th>Pass ID</th>
+                        <th>Visitor ID</th>
+                        <th>Visitor Name</th>
+                        <th>Purpose</th>
+                        <th>In Time</th>
+                        <th>Out Time</th>
+                        <th>Remarks</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for report in reports %}
+
+                    <tr>
+
+                        <td>
+                            L{{ "%03d" | format(report.log_id) }}
+                        </td>
+
+                        <td>
+                            GP{{ "%03d" | format(report.pass_id) }}
+                        </td>
+
+                        <td>
+                            V{{ "%03d" | format(report.visitor_id) }}
+                        </td>
+
+                        <td>
+                            {{ report.name }}
+                        </td>
+
+                        <td>
+                            {{ report.purpose }}
+                        </td>
+
+                        <td>
+                            {{ report.in_time }}
+                        </td>
+
+                        <td>
+                            {{ report.out_time or "Not Exited" }}
+                        </td>
+
+                        <td>
+                            {{ report.remarks or "-" }}
+                        </td>
+
+                    </tr>
+
+                    {% else %}
+
+                    <tr>
+                        <td colspan="8" class="no-data">
+                            No visitor reports found.
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </main>
+
+</div>
+
+</body>
+</html>
