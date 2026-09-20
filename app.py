@@ -1,7 +1,38 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
+from functools import wraps
 import mysql.connector
 
 app = Flask(__name__)
+app.secret_key = "visitor_management_secret"
+
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if session.get("role") != "Admin":
+            return "Access Denied: Admin only", 403
+        return f(*args, **kwargs)
+    return decorated_function
+
+def staff_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if session.get("role") not in ["Admin", "Security"]:
+            return "Access Denied: Staff only", 403
+        return f(*args, **kwargs)
+    return decorated_function
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args,**kwargs):
+        if "admin_id" not in session:
+            return redirect(url_for("login"))
+        return f(*args, **kwargs)
+    return decorated_function
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("login"))
 
 # MySQL Database Connection
 db = mysql.connector.connect(
@@ -31,6 +62,10 @@ def login():
         print("LOGIN RESULT:", admin)  # Debugging statement
 
         if admin:
+            session["admin_id"] = admin["admin_id"]
+            session["username"] = admin["username"]
+            session["role"] = admin["role"]
+              
             return redirect(url_for("dashboard"))
 
         return render_template(
@@ -42,10 +77,75 @@ def login():
 
 
 @app.route("/dashboard")
+@login_required
 def dashboard():
-    return render_template("dashboard.html")
+    role = session.get("role")
+
+    cursor = db.cursor(dictionary=True)
+
+    cursor.execute("SELECT COUNT(*) AS total FROM visitor")
+    total_visitors = cursor.fetchone()["total"]
+
+    cursor.execute("""
+        SELECT COUNT(*) AS total
+        FROM visit_request
+        WHERE status = 'Pending'
+    """)
+    pending_requests = cursor.fetchone()["total"]
+
+    cursor.execute("""
+        SELECT COUNT(*) AS total
+        FROM visit_request
+    """)
+    
+    total_requests = cursor.fetchone()["total"]
+
+    cursor.execute("""
+        SELECT COUNT(*) AS total
+        FROM visit_log
+        WHERE DATE(in_time) = CURDATE()
+    """)
+    todays_visits = cursor.fetchone()["total"]
+
+    cursor.execute("""
+        SELECT COUNT(*) AS total
+        FROM gate_pass
+        WHERE status = 'Active'
+    """)
+    active_passes = cursor.fetchone()["total"]
+
+    cursor.execute("""
+    SELECT
+        visit_log.log_id,
+        visitor.name,
+        visit_log.in_time,
+        visit_log.out_time
+    FROM visit_log
+    JOIN gate_pass
+    ON visit_log.pass_id = gate_pass.pass_id
+    JOIN visitor
+    ON gate_pass.visitor_id = visitor.visitor_id
+    ORDER BY visit_log.in_time DESC
+    LIMIT 5
+""")
+
+    recent_activity = cursor.fetchall()
+
+    cursor.close()
+
+    return render_template(
+        "dashboard.html",
+        role=role,
+        total_visitors=total_visitors,
+        total_requests=total_requests,
+        active_passes=active_passes,
+        pending_requests=pending_requests,
+        todays_visits=todays_visits
+    )
+     
 
 @app.route("/visitors")
+@login_required
 def visitors():
 
     search = request.args.get("search", "")
@@ -76,6 +176,7 @@ def visitors():
     )
 
 @app.route("/visit-requests")
+@login_required
 def visit_requests():
 
     cursor = db.cursor(dictionary=True)
@@ -93,6 +194,7 @@ def visit_requests():
 
 
 @app.route("/view-visitor/<int:visitor_id>")
+@login_required
 def view_visitor(visitor_id):
 
     cursor = db.cursor(dictionary=True)
@@ -109,6 +211,7 @@ def view_visitor(visitor_id):
     return render_template("view_visitor.html", visitor=visitor)
 
 @app.route("/edit-visitor/<int:visitor_id>", methods=["GET", "POST"])
+@admin_required
 def edit_visitor(visitor_id):
 
     cursor = db.cursor(dictionary=True)
@@ -150,6 +253,7 @@ def edit_visitor(visitor_id):
 
 
 @app.route("/delete-visitor/<int:visitor_id>")
+@admin_required
 def delete_visitor(visitor_id):
 
     cursor = db.cursor()
@@ -165,6 +269,7 @@ def delete_visitor(visitor_id):
     return redirect(url_for("visitors"))
 
 @app.route("/add-visitor", methods=["GET", "POST"])
+@admin_required
 def add_visitor():
 
     if request.method == "POST":
@@ -191,6 +296,7 @@ def add_visitor():
     return render_template("add_visitor.html")
 
 @app.route("/new-request", methods=["GET", "POST"])
+@admin_required
 def new_request():
 
     cursor = db.cursor(dictionary=True)
@@ -226,6 +332,7 @@ def new_request():
     )
 
 @app.route("/approve-request/<int:request_id>")
+@admin_required
 def approve_request(request_id):
     cursor = db.cursor()
     cursor.execute(
@@ -237,6 +344,7 @@ def approve_request(request_id):
     return redirect(url_for("visit_requests"))
 
 @app.route("/reject-request/<int:request_id>")
+@admin_required
 def reject_request(request_id):
     cursor = db.cursor()
     cursor.execute(
@@ -248,6 +356,7 @@ def reject_request(request_id):
     return redirect(url_for("visit_requests"))
 
 @app.route("/view-request/<int:request_id>")
+@login_required
 def view_request(request_id):
     cursor = db.cursor(dictionary=True)
 
@@ -267,6 +376,7 @@ def view_request(request_id):
     return render_template("view_request.html", req=req)
 
 @app.route("/gate-passes")
+@login_required
 def gate_passes():
     cursor = db.cursor(dictionary=True)
 
@@ -278,6 +388,7 @@ def gate_passes():
     return render_template("gate_passes.html", passes=passes)
 
 @app.route("/generate-gate-pass", methods=["GET", "POST"])
+@admin_required
 def generate_gate_pass():
     cursor = db.cursor(dictionary=True)
 
@@ -323,6 +434,7 @@ def generate_gate_pass():
     )
 
 @app.route("/view-gate-pass/<int:pass_id>")
+@login_required
 def view_gate_pass(pass_id):
     cursor = db.cursor(dictionary=True)
 
@@ -342,6 +454,7 @@ def view_gate_pass(pass_id):
     return render_template("view_gate_pass.html", gate_pass=gate_pass)
 
 @app.route("/visit-logs")
+@login_required
 def visit_logs():
     cursor = db.cursor(dictionary=True)
 
@@ -358,6 +471,7 @@ def visit_logs():
     return render_template("visit_logs.html", logs=logs)
 
 @app.route("/record-entry", methods=["GET", "POST"])
+@staff_required
 def record_entry():
     cursor = db.cursor(dictionary=True)
 
@@ -400,6 +514,7 @@ def record_entry():
     )
 
 @app.route("/record-exit/<int:log_id>")
+@staff_required
 def record_exit(log_id):
     cursor = db.cursor()
 
@@ -419,6 +534,7 @@ def record_exit(log_id):
     return redirect(url_for("visit_logs"))
 
 @app.route("/reports")
+@login_required
 def reports():
     search = request.args.get("search", "")
     date = request.args.get("date", "")
