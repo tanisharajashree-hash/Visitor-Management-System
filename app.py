@@ -472,6 +472,65 @@ def visit_logs():
     return render_template("visit_logs.html", logs=logs)
 
 
+@app.route("/settings")
+@login_required
+def settings():
+    cursor = db.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT admin_id, username, name, email, phone, role
+        FROM admin
+        WHERE admin_id = %s
+    """, (session["admin_id"],))
+
+    admin = cursor.fetchone()
+    cursor.close()
+
+    return render_template("settings.html", admin=admin)
+
+@app.route("/change-password", methods=["GET", "POST"])
+@login_required
+def change_password():
+
+    cursor = db.cursor(dictionary=True)
+
+    if request.method == "POST":
+
+        current_password = request.form["current_password"]
+        new_password = request.form["new_password"]
+        confirm_password = request.form["confirm_password"]
+
+        cursor.execute("""
+            SELECT password
+            FROM admin
+            WHERE admin_id = %s
+        """, (session["admin_id"],))
+
+        admin = cursor.fetchone()
+
+        if admin["password"] != current_password:
+            cursor.close()
+            return "Current password is incorrect"
+
+        if new_password != confirm_password:
+            cursor.close()
+            return "New passwords do not match"
+
+        cursor.execute("""
+            UPDATE admin
+            SET password = %s
+            WHERE admin_id = %s
+        """, (new_password, session["admin_id"]))
+
+        db.commit()
+        cursor.close()
+
+        return "Password changed successfully"
+
+    cursor.close()
+
+    return render_template("change_password.html")
+
 @app.route("/view-log/<int:log_id>")
 @login_required
 def view_log(log_id):

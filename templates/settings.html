@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Settings - Visitor Management System</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            <h2>VMS</h2>
+            <p>Visitor Management</p>
+        </div>
+
+        <nav>
+            <a href="{{ url_for('dashboard') }}">🏠 Dashboard</a>
+            <a href="{{ url_for('visitors') }}">👤 Visitors</a>
+            <a href="{{ url_for('visit_requests') }}">📋 Visit Requests</a>
+            <a href="{{ url_for('gate_passes') }}">🎫 Gate Passes</a>
+            <a href="{{ url_for('visit_logs') }}">📝 Visitor Logs</a>
+            <a href="/reports">📊 Reports</a>
+            <a href="{{ url_for('settings') }}" class="active">⚙️ Settings</a>
+        </nav>
+
+        <a href="/" class="logout">🚪 Logout</a>
+
+    </aside>
+
+    <main class="main-content">
+
+        <div class="page-header">
+            <div>
+                <h1>Settings</h1>
+                <p>Manage your administrator profile</p>
+            </div>
+        </div>
+
+        <div class="table-container">
+
+            <h2>Admin Profile</h2>
+
+            <p><strong>Admin ID:</strong>
+                {{ admin.admin_id }}
+            </p>
+
+            <p><strong>Username:</strong>
+                {{ admin.username }}
+            </p>
+
+            <p><strong>Name:</strong>
+                {{ admin.name }}
+            </p>
+
+            <p><strong>Email:</strong>
+                {{ admin.email }}
+            </p>
+
+            <p><strong>Phone:</strong>
+                {{ admin.phone }}
+            </p>
+
+            <p><strong>Role:</strong>
+                {{ admin.role }}
+            </p>
+
+        </div>
+         <br>
+
+         <a href="{{ url_for('change_password') }}" class="add-btn">Change Password
+            
+         </a>
+
+    </main>
+
+</div>
+
+</body>
+</html>
