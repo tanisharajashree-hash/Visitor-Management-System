@@ -39,7 +39,7 @@
                 📝 Visitor Logs
             </a>
 
-            <a href="#">📊 Reports</a>
+            <a href="/reports">📊 Reports</a>
 
             <a href="#">⚙️ Settings</a>
         </nav>
@@ -114,7 +114,7 @@
                         </td>
 
                         <td>
-                            <a href="#" class="view-btn">
+                            <a href="{{ url_for('view_log', log_id=log.log_id) }}" class="view-btn">
                                 View
                             </a>
                              

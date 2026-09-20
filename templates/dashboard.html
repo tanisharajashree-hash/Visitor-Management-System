@@ -20,11 +20,11 @@
         <p class="system-name">Visitor Management</p>
 
         <a href="/dashboard" class="active">🏠 Dashboard</a>
-        <a href="#">👤 Visitors</a>
-        <a href="#">📋 Visit Requests</a>
-        <a href="#">🎫 Gate Passes</a>
-        <a href="#">📝 Visitor Logs</a>
-        <a href="#">📊 Reports</a>
+        <a href="/visitors">👤 Visitors</a>
+        <a href="/visit-requests">📋 Visit Requests</a>
+        <a href="/gate-passes">🎫 Gate Passes</a>
+        <a href="/visit-logs">📝 Visitor Logs</a>
+        <a href="/reports">📊 Reports</a>
         <a href="#">⚙️ Settings</a>
 
         <a href="/" class="logout">🚪 Logout</a>
@@ -140,7 +140,32 @@
 
             <div class="activity-box">
 
-                <p>No recent visitor activity.</p>
+                {% if recent_activity %}
+    {% for activity in recent_activity %}
+        <div class="activity-item">
+            <p>
+                👤 <strong>{{ activity.name }}</strong>
+                visited
+            </p>
+
+            <p>
+                🕒 In Time: {{ activity.in_time }}
+            </p>
+
+            <p>
+                {% if activity.out_time %}
+                    🚪 Out Time: {{ activity.out_time }}
+                {% else %}
+                    🟢 Currently Inside
+                {% endif %}
+            </p>
+
+            <hr>
+        </div>
+    {% endfor %}
+{% else %}
+    <p>No recent visitor activity.</p>
+{% endif %}
 
             </div>
 

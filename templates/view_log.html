@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>View Visitor Log</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            <h2>VMS</h2>
+            <p>Visitor Management</p>
+        </div>
+
+        <nav>
+            <a href="{{ url_for('dashboard') }}">🏠 Dashboard</a>
+            <a href="{{ url_for('visitors') }}">👤 Visitors</a>
+            <a href="{{ url_for('visit_requests') }}">📋 Visit Requests</a>
+            <a href="{{ url_for('gate_passes') }}">🎫 Gate Passes</a>
+            <a href="{{ url_for('visit_logs') }}" class="active">📝 Visitor Logs</a>
+            <a href="/reports">📊 Reports</a>
+            <a href="#">⚙️ Settings</a>
+        </nav>
+
+        <a href="/" class="logout">🚪 Logout</a>
+
+    </aside>
+
+    <main class="main-content">
+
+        <div class="page-header">
+            <div>
+                <h1>Visitor Log Details</h1>
+                <p>View complete visitor entry and exit information</p>
+            </div>
+        </div>
+
+        <div class="table-container">
+
+            <h2>Log Information</h2>
+
+            <p><strong>Log ID:</strong>
+                L{{ "%03d" | format(log.log_id) }}
+            </p>
+
+            <p><strong>Pass ID:</strong>
+                GP{{ "%03d" | format(log.pass_id) }}
+            </p>
+
+            <p><strong>Visitor ID:</strong>
+                V{{ "%03d" | format(log.visitor_id) }}
+            </p>
+
+            <p><strong>Visitor Name:</strong>
+                {{ log.name }}
+            </p>
+
+            <p><strong>Phone:</strong>
+                {{ log.phone }}
+            </p>
+
+            <p><strong>Email:</strong>
+                {{ log.email }}
+            </p>
+
+            <p><strong>In Time:</strong>
+                {{ log.in_time }}
+            </p>
+
+            <p><strong>Out Time:</strong>
+                {{ log.out_time or "Not Exited" }}
+            </p>
+
+            <p><strong>Remarks:</strong>
+                {{ log.remarks or "-" }}
+            </p>
+
+            <br>
+
+            <a href="{{ url_for('visit_logs') }}" class="view-btn">
+                ← Back to Visitor Logs
+            </a>
+
+        </div>
+
+    </main>
+
+</div>
+
+</body>
+</html>

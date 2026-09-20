@@ -272,15 +272,91 @@ body {
 
 .add-btn {
     display: inline-block;
-    padding: 10px 25px;
-    background-color: #6c4ccf;
+    padding: 12px 20px;
+    background-color: #6c5ce7;
     color: white;
     text-decoration: none;
     border-radius: 6px;
+    font-size: 14px;
     font-weight: bold;
+    transition:0.3s;
     cursor: pointer;
 }
 
 .add-btn:hover {
-    background-color: #5638b5;
+    background-color: #5849c4;
+    transform: translateY(-2px);
 }
+
+/* Visitor Action Buttons */
+
+.view-btn,
+.edit-btn,
+.delete-btn {
+    display: inline-block;
+    padding: 8px 12px;
+    margin: 3px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+/* View Button */
+.view-btn {
+    background-color: #3498db;
+    color: white;
+}
+
+/* Edit Button */
+.edit-btn {
+    background-color: #f39c12;
+    color: white;
+}
+
+/* Delete Button */
+.delete-btn {
+    background-color: #e74c3c;
+    color: white;
+}
+
+/* Hover Effect */
+.view-btn:hover,
+.edit-btn:hover,
+.delete-btn:hover {
+    opacity: 0.8;
+}
+
+/* Search Bar Styling */
+
+.search-box {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.search-box input {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    min-width: 0;
+}
+
+.search-box button {
+    padding: 12px 20px;
+    background-color: #6c5ce7;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    width: auto !important;
+    flex-shrink: 0;
+}
+
+.search-box button:hover {
+    background-color: #5849c4;
+}
+

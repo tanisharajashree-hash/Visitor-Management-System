@@ -27,8 +27,8 @@
             <a href="{{ url_for('visitors') }}">👤 Visitors</a>
             <a href="{{ url_for('visit_requests') }}">📋 Visit Requests</a>
             <a href="{{ url_for('gate_passes') }}" class="active">🎫 Gate Passes</a>
-            <a href="#">📝 Visitor Logs</a>
-            <a href="#">📊 Reports</a>
+            <a href="/visit-logs">📝 Visitor Logs</a>
+            <a href="/reports">📊 Reports</a>
             <a href="#">⚙️ Settings</a>
         </nav>
 
@@ -44,7 +44,7 @@
                 <p>Manage visitor gate passes</p>
             </div>
 
-            <a href="#" class="add-btn">+ Generate Gate Pass</a>
+            <a href="{{ url_for('generate_gate_pass') }}" class="add-btn">+ Generate Gate Pass</a>
         </div>
 
         <div class="table-container">

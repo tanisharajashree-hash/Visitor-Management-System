@@ -140,7 +140,8 @@ def dashboard():
         total_requests=total_requests,
         active_passes=active_passes,
         pending_requests=pending_requests,
-        todays_visits=todays_visits
+        todays_visits=todays_visits,
+        recent_activity=recent_activity
     )
      
 
@@ -469,6 +470,39 @@ def visit_logs():
     cursor.close()
 
     return render_template("visit_logs.html", logs=logs)
+
+
+@app.route("/view-log/<int:log_id>")
+@login_required
+def view_log(log_id):
+    cursor = db.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT visit_log.log_id,
+               visit_log.pass_id,
+               gate_pass.visitor_id,
+               visitor.name,
+               visitor.phone,
+               visitor.email,
+               visit_log.in_time,
+               visit_log.out_time,
+               visit_log.remarks
+        FROM visit_log
+        JOIN gate_pass
+        ON visit_log.pass_id = gate_pass.pass_id
+        JOIN visitor
+        ON gate_pass.visitor_id = visitor.visitor_id
+        WHERE visit_log.log_id = %s
+    """, (log_id,))
+
+    log = cursor.fetchone()
+    cursor.close()
+
+    if not log:
+        return "Visitor log not found", 404
+
+    return render_template("view_log.html", log=log)
+
 
 @app.route("/record-entry", methods=["GET", "POST"])
 @staff_required

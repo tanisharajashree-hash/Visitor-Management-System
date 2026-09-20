@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visitors - Visitor Management System</title>
@@ -24,10 +25,10 @@
         <nav>
             <a href="{{ url_for('dashboard') }}">🏠 Dashboard</a>
             <a href="{{ url_for('visitors') }}" class="active">👤 Visitors</a>
-            <a href="#">📋 Visit Requests</a>
-            <a href="#">🎫 Gate Passes</a>
-            <a href="#">📝 Visitor Logs</a>
-            <a href="#">📊 Reports</a>
+            <a href="{{ url_for('visit_requests') }}">📋 Visit Requests</a>
+            <a href="{{ url_for('gate_passes') }}">🎫 Gate Passes</a>
+            <a href="/visit-logs">📝 Visitor Logs</a>
+            <a href="{{ url_for('reports') }}">📊 Reports</a>
             <a href="#">⚙️ Settings</a>
         </nav>
 
