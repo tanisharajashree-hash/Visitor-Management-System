@@ -24,7 +24,7 @@ def staff_required(f):
 def login_required(f):
     @wraps(f)
     def decorated_function(*args,**kwargs):
-        if "admin_id" not in session:
+        if "admin_id" not in session and "user_id" not in session:
             return redirect(url_for("login"))
         return f(*args, **kwargs)
     return decorated_function
@@ -42,7 +42,7 @@ db = mysql.connector.connect(
     database="visitor_management"
 )
 
-@app.route("/", methods=["GET", "POST"])
+@app.route("/login", methods=["GET", "POST"])
 def login():
 
     if request.method == "POST":
@@ -65,6 +65,9 @@ def login():
             session["admin_id"] = admin["admin_id"]
             session["username"] = admin["username"]
             session["role"] = admin["role"]
+
+            if admin["role"] == "Security":
+                return redirect(url_for("security_dashboard"))
               
             return redirect(url_for("dashboard"))
 
@@ -75,6 +78,281 @@ def login():
 
     return render_template("login.html")
 
+@app.route("/security-login", methods=["GET", "POST"])
+def security_login():
+
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
+
+        cursor = db.cursor(dictionary=True)
+
+        cursor.execute(
+            "SELECT * FROM admin WHERE username = %s AND password = %s AND role = 'Security'",
+            (username, password)
+        )
+
+        security = cursor.fetchone()
+        cursor.close()
+
+        if security:
+            session["admin_id"] = security["admin_id"]
+            session["username"] = security["username"]
+            session["role"] = "Security"
+
+            return redirect(url_for("security_dashboard"))
+
+        return render_template(
+            "security_login.html",
+            error="Invalid username or password"
+        )
+
+    return render_template("security_login.html")
+
+@app.route("/user-register", methods=["GET", "POST"])
+def user_register():
+
+    if request.method == "POST":
+
+        username = request.form["username"]
+        password = request.form["password"]
+        name = request.form["name"]
+        email = request.form["email"]
+        phone = request.form["phone"]
+
+        cursor = db.cursor(dictionary=True)
+
+        cursor.execute(
+            "SELECT * FROM user WHERE username = %s",
+            (username,)
+        )
+
+        existing_user = cursor.fetchone()
+
+        if existing_user:
+            cursor.close()
+            return render_template(
+                "user_register.html",
+                error="Username already exists"
+            )
+
+        cursor.execute(
+            """
+            INSERT INTO user
+            (username, password, name, email, phone)
+            VALUES (%s, %s, %s, %s, %s)
+            """,
+            (username, password, name, email, phone)
+        )
+
+        db.commit()
+        cursor.close()
+
+        return redirect(url_for("user_login"))
+
+    return render_template("user_register.html")
+
+@app.route("/user-login", methods=["GET", "POST"])
+def user_login():
+
+    if request.method == "POST":
+
+        username = request.form["username"]
+        password = request.form["password"]
+
+        cursor = db.cursor(dictionary=True)
+
+        cursor.execute(
+            """
+            SELECT * FROM user
+            WHERE username = %s AND password = %s
+            """,
+            (username, password)
+        )
+
+        user = cursor.fetchone()
+        cursor.close()
+
+        if user:
+            session["user_id"] = user["user_id"]
+            session["username"] = user["username"]
+            session["user_email"] = user["email"]
+            session["role"] = "User"
+
+            return redirect(url_for("user_dashboard"))
+
+        return render_template(
+            "user_login.html",
+            error="Invalid username or password"
+        )
+
+    return render_template("user_login.html")
+
+@app.route("/user-dashboard")
+def user_dashboard():
+
+    if session.get("role") != "User":
+        return "Access Denied: User only", 403
+
+    return render_template("user_dashboard.html")
+
+@app.route("/user-profile")
+def user_profile():
+
+    if session.get("role") != "User":
+         return "Access Denied: User only", 403
+
+    cursor = db.cursor(dictionary=True)
+
+    cursor.execute(
+        "SELECT * FROM user WHERE user_id = %s",
+        (session["user_id"],)
+    )
+
+    user = cursor.fetchone()
+    cursor.close()
+
+    return render_template("user_profile.html", user=user)
+
+
+@app.route("/user-new-request", methods=["GET", "POST"])
+def user_new_request():
+
+    if session.get("role") != "User":
+        return "Access Denied: User only", 403
+
+    if request.method == "POST":
+
+        visitor_name = request.form["visitor_name"]
+        visit_date = request.form["visit_date"]
+        purpose = request.form["purpose"]
+
+        cursor = db.cursor(dictionary=True)
+
+        # Get logged-in user's details
+        cursor.execute(
+            "SELECT name, email, phone FROM user WHERE user_id = %s",
+            (session["user_id"],)
+        )
+
+        user = cursor.fetchone()
+
+        # Create visitor record
+        cursor.execute(
+            """
+            INSERT INTO visitor
+            (name, phone, email, purpose)
+            VALUES (%s, %s, %s, %s)
+            """,
+            (
+                visitor_name,
+                user["phone"],
+                user["email"],
+                purpose
+            )
+        )
+
+        visitor_id = cursor.lastrowid
+
+        # Create visit request
+        cursor.execute(
+            """
+            INSERT INTO visit_request
+            (visitor_id, visit_date, purpose, status, request_time)
+            VALUES (%s, %s, %s, %s, NOW())
+            """,
+            (
+                visitor_id,
+                visit_date,
+                purpose,
+                "Pending"
+            )
+        )
+
+        db.commit()
+        cursor.close()
+
+        return redirect(url_for("user_dashboard"))
+
+    return render_template("user_new_request.html")
+
+@app.route("/user-visit-requests")
+def user_visit_requests():
+
+    if session.get("role") != "User":
+        return "Access Denied: User only", 403
+
+    cursor = db.cursor(dictionary=True)
+
+    cursor.execute(
+        """
+        SELECT
+            vr.request_id,
+            v.name AS visitor_name,
+            vr.visit_date,
+            vr.purpose,
+            vr.status,
+            vr.request_time
+        FROM visit_request vr
+        JOIN visitor v
+            ON vr.visitor_id = v.visitor_id
+        WHERE v.email = %s
+        ORDER BY vr.request_time DESC
+        """,
+        (session.get("user_email"),)
+    )
+
+    requests = cursor.fetchall()
+    cursor.close()
+
+    return render_template(
+        "user_visit_requests.html",
+        requests=requests
+    )
+
+@app.route("/user-logout")
+def user_logout():
+    session.clear()
+    return redirect(url_for("user_login"))
+
+@app.route("/security-dashboard")
+@staff_required
+def security_dashboard():
+    cursor = db.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT COUNT(*) AS total
+        FROM visit_request
+        WHERE status = 'Approved'
+    """)
+    approved_requests = cursor.fetchone()["total"]
+
+    cursor.execute("""
+        SELECT COUNT(*) AS total
+        FROM gate_pass
+        WHERE status = 'Active'
+    """)
+    active_passes = cursor.fetchone()["total"]
+
+    cursor.execute("""
+        SELECT COUNT(*) AS total
+        FROM visit_log
+        WHERE DATE(in_time) = CURDATE()
+    """)
+    todays_visits = cursor.fetchone()["total"]
+
+    cursor.close()
+
+    return render_template(
+        "security_dashboard.html",
+        approved_requests=approved_requests,
+        active_passes=active_passes,
+        todays_visits=todays_visits
+    )
+
+@app.route("/")
+def landing():
+    return render_template("landing.html")
 
 @app.route("/dashboard")
 @login_required
@@ -149,7 +427,7 @@ def dashboard():
 @login_required
 def visitors():
 
-    search = request.args.get("search", "")
+    search = request.args.get("search", "").strip()
 
     cursor = db.cursor(dictionary=True)
 
@@ -157,14 +435,28 @@ def visitors():
         cursor.execute(
             """
             SELECT * FROM visitor
-            WHERE name LIKE %s
+            WHERE CONCAT('V', LPAD(visitor_id, 3, '0')) LIKE %s
+               OR CAST(visitor_id AS CHAR) LIKE %s
+               OR name LIKE %s
                OR phone LIKE %s
                OR email LIKE %s
+            ORDER BY visitor_id DESC
             """,
-            (f"%{search}%", f"%{search}%", f"%{search}%")
+            (
+                f"%{search}%",
+                f"%{search}%",
+                f"%{search}%",
+                f"%{search}%",
+                f"%{search}%"
+            )
         )
     else:
-        cursor.execute("SELECT * FROM visitor")
+        cursor.execute(
+            """
+            SELECT * FROM visitor
+            ORDER BY visitor_id DESC
+            """
+        )
 
     visitors = cursor.fetchall()
 
@@ -175,24 +467,34 @@ def visitors():
         visitors=visitors,
         search=search
     )
+        
 
 @app.route("/visit-requests")
 @login_required
 def visit_requests():
-
     cursor = db.cursor(dictionary=True)
 
-    cursor.execute("SELECT * FROM visit_request")
+    if session.get("role") == "Security":
+        cursor.execute("""
+            SELECT *
+            FROM visit_request
+            WHERE status = 'Approved'
+            ORDER BY request_time DESC
+        """)
+    else:
+        cursor.execute("""
+            SELECT *
+            FROM visit_request
+            ORDER BY request_time DESC
+        """)
 
     requests = cursor.fetchall()
-
     cursor.close()
 
     return render_template(
         "visit_requests.html",
         requests=requests
     )
-
 
 @app.route("/view-visitor/<int:visitor_id>")
 @login_required
@@ -454,22 +756,106 @@ def view_gate_pass(pass_id):
 
     return render_template("view_gate_pass.html", gate_pass=gate_pass)
 
+@app.route("/user-gate-passes")
+def user_gate_passes():
+
+    if session.get("role") != "User":
+        return "Access Denied: User only", 403
+
+    cursor = db.cursor(dictionary=True)
+
+    cursor.execute(
+        """
+        SELECT
+            gp.pass_id,
+            gp.request_id,
+            gp.visitor_id,
+            gp.issue_date,
+            gp.valid_time,
+            gp.status,
+            v.name AS visitor_name
+        FROM gate_pass gp
+        JOIN visitor v
+            ON gp.visitor_id = v.visitor_id
+        WHERE v.email = %s
+        ORDER BY gp.issue_date DESC
+        """,
+        (session.get("user_email"),)
+    )
+
+    passes = cursor.fetchall()
+    cursor.close()
+
+    return render_template(
+        "user_gate_passes.html",
+        passes=passes
+    )
+
 @app.route("/visit-logs")
 @login_required
 def visit_logs():
+
+    search = request.args.get("search", "").strip()
+    date = request.args.get("date", "").strip()
+    status = request.args.get("status", "").strip()
+
     cursor = db.cursor(dictionary=True)
 
-    cursor.execute("""
+    query = """
         SELECT visit_log.*, gate_pass.visitor_id
         FROM visit_log
         JOIN gate_pass
         ON visit_log.pass_id = gate_pass.pass_id
-    """)
+        WHERE 1=1
+    """
+
+    params = []
+
+    # Search Visitor ID or Pass ID
+    if search:
+        query += """
+            AND (
+                CONCAT('V', LPAD(gate_pass.visitor_id, 3, '0')) LIKE %s
+                OR CAST(gate_pass.visitor_id AS CHAR) LIKE %s
+                OR CONCAT('GP', LPAD(visit_log.pass_id, 3, '0')) LIKE %s
+                OR CAST(visit_log.pass_id AS CHAR) LIKE %s
+            )
+        """
+
+        params.extend([
+            f"%{search}%",
+            f"%{search}%",
+            f"%{search}%",
+            f"%{search}%"
+        ])
+
+    # Date filter
+    if date:
+        query += " AND DATE(visit_log.in_time) = %s"
+        params.append(date)
+
+    # Entry / Exit filter
+    if status == "entered":
+        query += " AND visit_log.out_time IS NULL"
+
+    elif status == "exited":
+        query += " AND visit_log.out_time IS NOT NULL"
+
+    query += " ORDER BY visit_log.log_id DESC"
+
+    cursor.execute(query, params)
 
     logs = cursor.fetchall()
+
     cursor.close()
 
-    return render_template("visit_logs.html", logs=logs)
+    return render_template(
+        "visit_logs.html",
+        logs=logs,
+        search=search,
+        date=date,
+        status=status
+    )
 
 
 @app.route("/settings")

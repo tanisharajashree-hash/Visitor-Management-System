@@ -23,14 +23,62 @@
         </div>
 
         <nav>
-            <a href="{{ url_for('dashboard') }}">🏠 Dashboard</a>
-            <a href="{{ url_for('visitors') }}">👤 Visitors</a>
-            <a href="{{ url_for('visit_requests') }}">📋 Visit Requests</a>
-            <a href="{{ url_for('gate_passes') }}" class="active">🎫 Gate Passes</a>
-            <a href="/visit-logs">📝 Visitor Logs</a>
-            <a href="/reports">📊 Reports</a>
-            <a href="#">⚙️ Settings</a>
-        </nav>
+
+    {% if session.get("role") == "Security" %}
+
+        <a href="{{ url_for('security_dashboard') }}">
+            🏠 Dashboard
+        </a>
+
+        <a href="{{ url_for('visit_requests') }}">
+            📋 Visit Requests
+        </a>
+
+        <a href="{{ url_for('gate_passes') }}" class="active">
+            🎫 Gate Passes
+        </a>
+
+        <a href="{{ url_for('visit_logs') }}">
+            📝 Visitor Logs
+        </a>
+
+        <a href="{{ url_for('record_entry') }}">
+            🚪 Record Entry
+        </a>
+
+    {% else %}
+
+        <a href="{{ url_for('dashboard') }}">
+            🏠 Dashboard
+        </a>
+
+        <a href="{{ url_for('visitors') }}">
+            👤 Visitors
+        </a>
+
+        <a href="{{ url_for('visit_requests') }}">
+            📋 Visit Requests
+        </a>
+
+        <a href="{{ url_for('gate_passes') }}" class="active">
+            🎫 Gate Passes
+        </a>
+
+        <a href="{{ url_for('visit_logs') }}">
+            📝 Visitor Logs
+        </a>
+
+        <a href="{{ url_for('reports') }}">
+            📊 Reports
+        </a>
+
+        <a href="{{ url_for('settings') }}">
+            ⚙️ Settings
+        </a>
+
+    {% endif %}
+
+</nav>
 
         <a href="/" class="logout">🚪 Logout</a>
 
@@ -43,8 +91,11 @@
                 <h1>Gate Passes</h1>
                 <p>Manage visitor gate passes</p>
             </div>
-
-            <a href="{{ url_for('generate_gate_pass') }}" class="add-btn">+ Generate Gate Pass</a>
+         
+            {% if session.get("role") == "Admin" %}
+                <a href="{{ url_for('generate_gate_pass') }}" class="add-btn">+ Generate Gate Pass</a>
+            {% endif %}
+            
         </div>
 
         <div class="table-container">

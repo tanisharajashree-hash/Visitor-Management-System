@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Visit Requests - Visitor Management System</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+        }
+
+        .header {
+            background: #6c4cff;
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 25px;
+        }
+
+        .dashboard-btn {
+            background: white;
+            color: #6c4cff;
+            padding: 10px 18px;
+            text-decoration: none;
+            border-radius: 7px;
+            font-weight: bold;
+        }
+
+        .container {
+            padding: 35px;
+        }
+
+        .box {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            overflow-x: auto;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 14px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background: #eeeaff;
+            color: #333;
+        }
+
+        td {
+            color: #555;
+        }
+
+        .status {
+            font-weight: bold;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 20px;
+            background: #6c4cff;
+            color: white;
+            padding: 10px 18px;
+            text-decoration: none;
+            border-radius: 7px;
+            font-weight: bold;
+        }
+
+        .back-btn:hover {
+            background: #5638d8;
+        }
+
+        .no-request {
+            color: #777;
+            padding: 15px 0;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="header">
+
+        <h1>Visitor Management System</h1>
+
+        <a href="{{ url_for('user_dashboard') }}" class="dashboard-btn">
+            Dashboard
+        </a>
+
+    </div>
+
+
+    <div class="container">
+
+        <div class="box">
+
+            <h2>My Visit Requests</h2>
+
+            {% if requests %}
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Request ID</th>
+                        <th>Visitor Name</th>
+                        <th>Visit Date</th>
+                        <th>Purpose</th>
+                        <th>Status</th>
+                        <th>Request Time</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for req in requests %}
+
+                    <tr>
+                        <td>{{ req.request_id }}</td>
+                        <td>{{ req.visitor_name }}</td>
+                        <td>{{ req.visit_date }}</td>
+                        <td>{{ req.purpose }}</td>
+                        <td class="status">{{ req.status }}</td>
+                        <td>{{ req.request_time }}</td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+            {% else %}
+
+            <p class="no-request">
+                You have not submitted any visit requests yet.
+            </p>
+
+            {% endif %}
+
+            <a href="{{ url_for('user_dashboard') }}" class="back-btn">
+                ← Back to Dashboard
+            </a>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Visitor Management System</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='landing.css') }}">
+</head>
+
+<body>
+
+    <div class="landing-page">
+
+        <div class="content">
+
+            <div class="welcome-text">
+                <p>WELCOME</p>
+            </div>
+
+            <h1>Visitor Management System</h1>
+
+            <p class="subtitle">
+                Secure • Simple • Smart Visitor Management
+            </p>
+
+            <div class="options">
+
+                <a href="{{ url_for('login') }}" class="role-card">
+                    <div class="icon">👨‍💼</div>
+                    <h2>Admin Login</h2>
+                    <p>Manage visitors, requests and reports</p>
+                </a>
+
+                <a href="{{ url_for('security_login') }}" class="role-card">
+                    <div class="icon">🛡️</div>
+                    <h2>Security Login</h2>
+                    <p>Verify visitors and manage entry</p>
+                </a>
+
+                <a href="{{ url_for('user_login') }}" class="role-card">
+                    <div class="icon">👤</div>
+                    <h2>User / Visitor</h2>
+                    <p>Submit and track visit requests</p>
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+</html>

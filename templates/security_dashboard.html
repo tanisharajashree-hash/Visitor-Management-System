@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Security Dashboard - Visitor Management System</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='security_dashboard.css') }}">
+</head>
+
+<body>
+
+    <div class="sidebar">
+
+        <h2>VMS</h2>
+
+        <p>Security Panel</p>
+
+        <a href="{{ url_for('security_dashboard') }}">
+            Dashboard
+        </a>
+
+        <a href="{{ url_for('visit_requests') }}">
+            Visit Requests
+        </a>
+
+        <a href="{{ url_for('gate_passes') }}">
+            Gate Passes
+        </a>
+
+        <a href="{{ url_for('visit_logs') }}">
+            Visitor Logs
+        </a>
+
+        <a href="{{ url_for('record_entry') }}">
+            Record Entry
+        </a>
+
+        <a href="{{ url_for('logout') }}">
+            Logout
+        </a>
+
+    </div>
+
+    <div class="main-content">
+
+        <h1>Security Dashboard</h1>
+
+        <p class="subtitle">
+            Manage visitor entry and security activities
+        </p>
+
+        <div class="cards">
+
+            <div class="card">
+                <h3>Approved Requests</h3>
+                <h2>{{ approved_requests }}</h2>
+            </div>
+
+            <div class="card">
+                <h3>Active Gate Passes</h3>
+                <h2>{{ active_passes }}</h2>
+            </div>
+
+            <div class="card">
+                <h3>Today's Visits</h3>
+                <h2>{{ todays_visits }}</h2>
+            </div>
+
+        </div>
+
+        <div class="welcome-box">
+
+            <h2>Welcome, Security Officer 👮</h2>
+
+            <p>
+                Verify approved visitors and manage entry and exit records.
+            </p>
+
+        </div>
+
+    </div>
+
+</body>
+</html>

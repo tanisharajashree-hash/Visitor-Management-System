@@ -9,57 +9,121 @@
 
     <link rel="stylesheet"
           href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        .gate-pass {
+            max-width: 500px;
+            margin: 30px auto;
+            padding: 25px;
+            border: 2px solid #333;
+            border-radius: 10px;
+            background: white;
+        }
+
+        .gate-pass h1 {
+            text-align: center;
+        }
+
+        .gate-pass p {
+            margin: 12px 0;
+        }
+
+        .button-area {
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        .print-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            background: #6f42c1;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 15px;
+        }
+
+        @media print {
+            .button-area {
+                display: none;
+            }
+
+            body {
+                background: white;
+            }
+
+            .gate-pass {
+                border: 2px solid #000;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
 <div class="container">
 
-    <h1>Gate Pass Details</h1>
-    <p>View gate pass information</p>
+    <div class="gate-pass">
 
-    <hr>
+        <h1>VISITOR GATE PASS</h1>
 
-    <p>
-        <strong>Pass ID:</strong>
-        GP{{ "%03d" | format(gate_pass.pass_id) }}
-    </p>
+        <hr>
 
-    <p>
-        <strong>Request ID:</strong>
-        R{{ "%03d" | format(gate_pass.request_id) }}
-    </p>
+        <p>
+            <strong>Pass ID:</strong>
+            GP{{ "%03d" | format(gate_pass.pass_id) }}
+        </p>
 
-    <p>
-        <strong>Visitor ID:</strong>
-        V{{ "%03d" | format(gate_pass.visitor_id) }}
-    </p>
+        <p>
+            <strong>Request ID:</strong>
+            R{{ "%03d" | format(gate_pass.request_id) }}
+        </p>
 
-    <p>
-        <strong>Visitor Name:</strong>
-        {{ gate_pass.name }}
-    </p>
+        <p>
+            <strong>Visitor ID:</strong>
+            V{{ "%03d" | format(gate_pass.visitor_id) }}
+        </p>
 
-    <p>
-        <strong>Issue Date:</strong>
-        {{ gate_pass.issue_date }}
-    </p>
+        <p>
+            <strong>Visitor Name:</strong>
+            {{ gate_pass.name }}
+        </p>
 
-    <p>
-        <strong>Valid Time:</strong>
-        {{ gate_pass.valid_time }}
-    </p>
+        <p>
+            <strong>Issue Date:</strong>
+            {{ gate_pass.issue_date }}
+        </p>
 
-    <p>
-        <strong>Status:</strong>
-        {{ gate_pass.status }}
-    </p>
+        <p>
+            <strong>Valid Time:</strong>
+            {{ gate_pass.valid_time }}
+        </p>
 
-    <br>
+        <p>
+            <strong>Status:</strong>
+            {{ gate_pass.status }}
+        </p>
 
-    <a href="{{ url_for('gate_passes') }}">
-        ← Back to Gate Passes
-    </a>
+        <div class="button-area">
+
+            <button class="print-btn" onclick="window.print()">
+                🖨️ Print Gate Pass
+            </button>
+
+            <br>
+
+            <a class="back-btn" href="{{ url_for('user_gate_passes') }}">
+                ← Back to Gate Passes
+            </a>
+
+        </div>
+
+    </div>
 
 </div>
 

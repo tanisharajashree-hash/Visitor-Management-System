@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>User Login - Visitor Management System</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='user_login.css') }}">
+</head>
+
+<body>
+
+<div class="login-container">
+
+    <div class="login-box">
+
+        <h1>Visitor Management System</h1>
+
+        <p class="subtitle">User Login</p>
+
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+
+        <form method="POST">
+
+            <label>Username</label>
+
+            <input type="text"
+                   name="username"
+                   placeholder="Enter your username"
+                   required>
+
+            <label>Password</label>
+
+            <input type="password"
+                   name="password"
+                   placeholder="Enter your password"
+                   required>
+
+            <button type="submit">
+                Login
+            </button>
+
+        </form>
+
+        <p class="register-link">
+            Don't have an account?
+            <a href="{{ url_for('user_register') }}">
+                Register
+            </a>
+        </p>
+
+    </div>
+
+</div>
+
+</body>
+</html>

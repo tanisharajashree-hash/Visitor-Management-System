@@ -23,25 +23,56 @@
         </div>
 
         <nav>
-            <a href="{{ url_for('dashboard') }}">🏠 Dashboard</a>
+            {% if session.get("role") == "Security" %}
 
-            <a href="{{ url_for('visitors') }}">👤 Visitors</a>
+    <a href="{{ url_for('security_dashboard') }}">
+        🏠 Dashboard
+    </a>
 
-            <a href="{{ url_for('visit_requests') }}">
-                📋 Visit Requests
-            </a>
+    <a href="{{ url_for('visit_requests') }}">
+        📋 Visit Requests
+    </a>
 
-            <a href="{{ url_for('gate_passes') }}">
-                🎫 Gate Passes
-            </a>
+    <a href="{{ url_for('gate_passes') }}">
+        🎫 Gate Passes
+    </a>
 
-            <a href="{{ url_for('visit_logs') }}" class="active">
-                📝 Visitor Logs
-            </a>
+    <a href="{{ url_for('visit_logs') }}" class="active">
+        📝 Visitor Logs
+    </a>
 
-            <a href="/reports">📊 Reports</a>
+    <a href="{{ url_for('record_entry') }}">
+        🚪 Record Entry
+    </a>
 
-            <a href="#">⚙️ Settings</a>
+{% else %}
+
+    <a href="{{ url_for('dashboard') }}">
+        🏠 Dashboard
+    </a>
+
+    <a href="{{ url_for('visitors') }}">
+        👤 Visitors
+    </a>
+
+    <a href="{{ url_for('visit_requests') }}">
+        📋 Visit Requests
+    </a>
+
+    <a href="{{ url_for('gate_passes') }}">
+        🎫 Gate Passes
+    </a>
+
+
+    <a href="{{ url_for('reports') }}">
+        📊 Reports
+    </a>
+
+    <a href="{{ url_for('settings') }}">
+        ⚙️ Settings
+    </a>
+
+{% endif %}
         </nav>
 
         <a href="/" class="logout">🚪 Logout</a>
@@ -65,6 +96,49 @@
 
         </div>
 
+
+        <!-- Search and Filter -->
+
+<form method="GET"
+      action="{{ url_for('visit_logs') }}"
+      class="search-box">
+
+    <input
+        type="text"
+        name="search"
+        placeholder="🔍 Search Visitor ID or Pass ID..."
+        value="{{ search }}"
+    >
+
+    <input
+        type="date"
+        name="date"
+        value="{{ date }}"
+    >
+
+    <select name="status">
+
+        <option value="">All Status</option>
+
+        <option value="entered"
+            {% if status == "entered" %}selected{% endif %}>
+            Not Exited
+        </option>
+
+        <option value="exited"
+            {% if status == "exited" %}selected{% endif %}>
+            Exited
+        </option>
+
+    </select>
+
+    <button type="submit">Search</button>
+
+    <a href="{{ url_for('visit_logs') }}" class="clear-btn">
+        Clear
+    </a>
+
+</form>
 
         <!-- Logs Table -->
         <div class="table-container">

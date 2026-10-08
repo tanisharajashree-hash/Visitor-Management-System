@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>User Registration - Visitor Management System</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='user_register.css') }}">
+</head>
+
+<body>
+
+<div class="register-container">
+
+    <div class="register-box">
+
+        <h1>Visitor Management System</h1>
+
+        <p class="subtitle">Create User Account</p>
+
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+
+        <form method="POST">
+
+            <label>Name</label>
+            <input type="text"
+                   name="name"
+                   placeholder="Enter your name"
+                   required>
+
+            <label>Username</label>
+            <input type="text"
+                   name="username"
+                   placeholder="Create a username"
+                   required>
+
+            <label>Password</label>
+            <input type="password"
+                   name="password"
+                   placeholder="Create a password"
+                   required>
+
+            <label>Email</label>
+            <input type="email"
+                   name="email"
+                   placeholder="Enter your email">
+
+            <label>Phone</label>
+            <input type="text"
+                   name="phone"
+                   placeholder="Enter your phone number">
+
+            <button type="submit">
+                Create Account
+            </button>
+
+        </form>
+
+        <p class="register-link">
+            Already have an account?
+            <a href="{{ url_for('user_login') }}">
+                Login
+            </a>
+        </p>
+
+    </div>
+
+</div>
+
+</body>
+</html>

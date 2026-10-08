@@ -1,0 +1,148 @@
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Request a Visit - Visitor Management System</title>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        background: #f5f5f5;
+    }
+
+    .header {
+        background: #6c4cff;
+        color: white;
+        padding: 20px 30px;
+    }
+
+    .header h1 {
+        font-size: 25px;
+    }
+
+    .container {
+        padding: 35px;
+    }
+
+    .form-box {
+        max-width: 550px;
+        margin: auto;
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .form-box h2 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 25px;
+    }
+
+    .form-box label {
+        display: block;
+        margin-bottom: 7px;
+        color: #333;
+        font-weight: bold;
+    }
+
+    .form-box input {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 18px;
+        border: 1px solid #ccc;
+        border-radius: 7px;
+        font-size: 15px;
+    }
+
+    .form-box input:focus {
+        outline: none;
+        border-color: #6c4cff;
+    }
+
+    .submit-btn {
+        width: 100%;
+        padding: 13px;
+        background: #6c4cff;
+        color: white;
+        border: none;
+        border-radius: 7px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .submit-btn:hover {
+        background: #5638d8;
+    }
+
+    .back-btn {
+        display: inline-block;
+        margin-top: 20px;
+        color: #6c4cff;
+        text-decoration: none;
+        font-weight: bold;
+    }
+</style>
+
+</head><body><div class="header">
+    <h1>Visitor Management System</h1>
+</div>
+
+<div class="container">
+
+    <div class="form-box">
+
+        <h2>Request a Visit</h2>
+
+        <form method="POST"
+              action="{{ url_for('user_new_request') }}">
+
+            <label for="visitor_name">Visitor Name</label>
+
+            <input
+                type="text"
+                id="visitor_name"
+                name="visitor_name"
+                placeholder="Enter visitor name"
+                required
+            >
+
+            <label for="visit_date">Visit Date</label>
+
+            <input
+                type="date"
+                id="visit_date"
+                name="visit_date"
+                required
+            >
+
+            <label for="purpose">Purpose of Visit</label>
+
+            <input
+                type="text"
+                id="purpose"
+                name="purpose"
+                placeholder="Enter purpose of visit"
+                required
+            >
+
+            <button type="submit" class="submit-btn">
+                Submit Request
+            </button>
+
+        </form>
+
+        <a href="{{ url_for('user_dashboard') }}" class="back-btn">
+            ← Back to Dashboard
+        </a>
+
+    </div>
+
+</div>
+
+</body></html>

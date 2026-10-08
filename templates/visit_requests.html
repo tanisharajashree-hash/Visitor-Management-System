@@ -24,19 +24,66 @@
         </div>
 
         <nav>
-            <a href="{{ url_for('dashboard') }}">🏠 Dashboard</a>
 
-            <a href="{{ url_for('visitors') }}">👤 Visitors</a>
+    {% if session.get("role") == "Security" %}
 
-            <a href="{{ url_for('visit_requests') }}" class="active">
-                📋 Visit Requests
-            </a>
+        <a href="{{ url_for('security_dashboard') }}">
+            🏠 Dashboard
+        </a>
 
-            <a href="{{ url_for('gate_passes') }}">🎫 Gate Passes</a>
-            <a href="/visit-logs">📝 Visitor Logs</a>
-            <a href="{{ url_for('reports')}}">📊 Reports</a>
-            <a href="#">⚙️ Settings</a>
-        </nav>
+        <a href="{{ url_for('visit_requests') }}" class="active">
+            📋 Visit Requests
+        </a>
+
+        <a href="{{ url_for('gate_passes') }}">
+            🎫 Gate Passes
+        </a>
+
+        <a href="{{ url_for('visit_logs') }}">
+            📝 Visitor Logs
+        </a>
+
+        <a href="{{ url_for('record_entry') }}">
+            🚪 Record Entry
+        </a>
+
+
+
+    {% else %}
+
+        <!-- Admin Sidebar -->
+
+        <a href="{{ url_for('dashboard') }}">
+            🏠 Dashboard
+        </a>
+
+        <a href="{{ url_for('visitors') }}">
+            👤 Visitors
+        </a>
+
+        <a href="{{ url_for('visit_requests') }}" class="active">
+            📋 Visit Requests
+        </a>
+
+        <a href="{{ url_for('gate_passes') }}">
+            🎫 Gate Passes
+        </a>
+
+        <a href="{{ url_for('visit_logs') }}">
+            📝 Visitor Logs
+        </a>
+
+        <a href="{{ url_for('reports') }}">
+            📊 Reports
+        </a>
+
+        <a href="{{ url_for('settings') }}">
+            ⚙️ Settings
+        </a>
+
+    {% endif %}
+
+</nav>
 
         <a href="/" class="logout">🚪 Logout</a>
 
@@ -51,8 +98,9 @@
                 <h1>Visit Requests</h1>
                 <p>Manage visitor visit requests</p>
             </div>
-
+        {% if session.get("role") == "Admin" %}    
             <a href="{{ url_for('new_request') }}" class="add-btn">+ New Request</a>
+        {% endif %}
         </div>
 
 
@@ -94,9 +142,19 @@
                   <td>{{ req.status }}</td>
                   <td>{{ req.request_time }}</td>
                   <td>
-                      <a href="{{ url_for('view_request', request_id=req.request_id) }}" class="view-btn">View</a>
-                      <a href="{{ url_for('approve_request', request_id=req.request_id) }}" class="edit-btn">Approve</a>
-                      <a href="{{ url_for('reject_request', request_id=req.request_id) }}" class="delete-btn">Reject</a>
+                      <a href="{{ url_for('view_request', request_id=req.request_id) }}" class="view-btn">
+                        View
+                     </a>
+
+                     {% if session.get("role") == "Admin" %}
+                         <a href="{{ url_for('approve_request', request_id=req.request_id) }}" class="edit-btn">
+                            Approve
+                         </a>
+
+                         <a href="{{ url_for('reject_request', request_id=req.request_id) }}" class="delete-btn">
+                            Reject
+                         </a>
+                     {% endif %}
                   </td>
               </tr>
               {% else %}

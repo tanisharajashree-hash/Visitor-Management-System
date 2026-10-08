@@ -22,16 +22,15 @@
         </div>
 
         <nav>
-            <a href="{{ url_for('dashboard') }}">🏠 Dashboard</a>
-            <a href="{{ url_for('visitors') }}">👤 Visitors</a>
+            <a href="{{ url_for('security_dashboard') }}">🏠 Dashboard</a>
             <a href="{{ url_for('visit_requests') }}">📋 Visit Requests</a>
             <a href="{{ url_for('gate_passes') }}">🎫 Gate Passes</a>
             <a href="{{ url_for('visit_logs') }}">📝 Visitor Logs</a>
-            <a href="#">📊 Reports</a>
-            <a href="#">⚙️ Settings</a>
+            <a href="{{ url_for('record_entry') }}"> Record Entry</a>
+            
         </nav>
 
-        <a href="/" class="logout">🚪 Logout</a>
+        <a href="{{ url_for('logout') }}" class="logout">🚪 Logout</a>
 
     </aside>
 

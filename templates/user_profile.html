@@ -1,0 +1,112 @@
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>My Profile - Visitor Management System</title>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        background: #f5f5f5;
+    }
+
+    .header {
+        background: #6c4cff;
+        color: white;
+        padding: 20px 30px;
+    }
+
+    .header h1 {
+        font-size: 25px;
+    }
+
+    .container {
+        padding: 35px;
+    }
+
+    .profile-box {
+        max-width: 600px;
+        margin: auto;
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .profile-box h2 {
+        color: #333;
+        margin-bottom: 25px;
+        text-align: center;
+    }
+
+    .profile-item {
+        padding: 12px 0;
+        border-bottom: 1px solid #eee;
+    }
+
+    .profile-item strong {
+        color: #333;
+    }
+
+    .profile-item span {
+        color: #666;
+    }
+
+    .back-btn {
+        display: inline-block;
+        margin-top: 25px;
+        padding: 11px 20px;
+        background: #6c4cff;
+        color: white;
+        text-decoration: none;
+        border-radius: 7px;
+    }
+
+    .back-btn:hover {
+        background: #5638d8;
+    }
+</style>
+
+</head><body><div class="header">
+    <h1>Visitor Management System</h1>
+</div>
+
+<div class="container">
+
+    <div class="profile-box">
+
+        <h2>My Profile</h2>
+
+        <div class="profile-item">
+            <strong>Name:</strong>
+            <span>{{ user.name }}</span>
+        </div>
+
+        <div class="profile-item">
+            <strong>Username:</strong>
+            <span>{{ user.username }}</span>
+        </div>
+
+        <div class="profile-item">
+            <strong>Email:</strong>
+            <span>{{ user.email or "Not provided" }}</span>
+        </div>
+
+        <div class="profile-item">
+            <strong>Phone:</strong>
+            <span>{{ user.phone or "Not provided" }}</span>
+        </div>
+
+        <a href="{{ url_for('user_dashboard') }}" class="back-btn">
+            Back to Dashboard
+        </a>
+
+    </div>
+
+</div>
+
+</body></html>

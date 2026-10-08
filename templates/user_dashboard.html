@@ -1,0 +1,156 @@
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>User Dashboard - Visitor Management System</title>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        background: #f5f5f5;
+    }
+
+    .header {
+        background: #6c4cff;
+        color: white;
+        padding: 20px 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .header h1 {
+        font-size: 25px;
+    }
+
+    .logout-btn {
+        background: white;
+        color: #6c4cff;
+        padding: 10px 18px;
+        text-decoration: none;
+        border-radius: 7px;
+        font-weight: bold;
+    }
+
+    .logout-btn:hover {
+        background: #eeeaff;
+    }
+
+    .container {
+        padding: 35px;
+    }
+
+    .welcome-box {
+        background: white;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        margin-bottom: 25px;
+    }
+
+    .welcome-box h2 {
+        color: #333;
+        margin-bottom: 8px;
+    }
+
+    .welcome-box p {
+        color: #666;
+    }
+
+    .features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 20px;
+    }
+
+    .feature-card {
+        background: white;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        text-align: center;
+    }
+
+    .feature-card h3 {
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+    .feature-card p {
+        color: #777;
+        font-size: 14px;
+        margin-bottom: 18px;
+    }
+
+    .feature-btn {
+        display: inline-block;
+        background: #6c4cff;
+        color: white;
+        padding: 10px 18px;
+        text-decoration: none;
+        border-radius: 7px;
+        font-weight: bold;
+    }
+
+    .feature-btn:hover {
+        background: #5638d8;
+    }
+</style>
+
+</head><body><div class="header">
+
+    <h1>Visitor Management System</h1>
+
+    <a href="{{ url_for('user_logout') }}" class="logout-btn">
+        Logout
+    </a>
+
+</div>
+
+<div class="container">
+
+    <div class="welcome-box">
+
+        <h2>Welcome, User!</h2>
+
+        <p>
+            You have successfully logged in to the User Portal.
+        </p>
+
+    </div>
+
+    <div class="features">
+
+        <div class="feature-card">
+            <h3>My Profile</h3>
+            <p>View your profile information.</p>
+            <a href="{{ url_for('user_profile') }}" class="feature-btn">View Profile</a>
+        </div>
+
+        <div class="feature-card">
+            <h3>Request a Visit</h3>
+            <p>Submit a new visitor request.</p>
+            <a href="{{ url_for('user_new_request') }}" class="feature-btn">Request Visit</a>
+        </div>
+
+        <div class="feature-card">
+            <h3>My Visit Requests</h3>
+            <p>View your submitted visit requests.</p>
+            <a href="{{ url_for('user_visit_requests') }}" class="feature-btn">View Requests</a>
+        </div>
+
+        <div class="feature-card">
+            <h3>My Gate Pass</h3>
+            <p>View your approved gate pass.</p>
+            <a href="{{ url_for('user_gate_passes') }}" class="feature-btn">View Gate Pass</a>
+        </div>
+
+    </div>
+
+</div>
+
+</body></html>

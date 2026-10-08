@@ -6,7 +6,8 @@
 
 body {
     font-family: Arial, sans-serif;
-    background: #f4f6f8;
+    background: #f4f6f9;
+    margin: 0;
 }
 
 .login-container {
@@ -407,4 +408,11 @@ body {
         font-size: 12px;
         padding: 8px 12px;
     }
+}
+
+.login-page {
+    background-image: url("visitor.jpeg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }

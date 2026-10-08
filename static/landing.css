@@ -1,0 +1,141 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+}
+
+.landing-page {
+    min-height: 100vh;
+
+    background-image:
+        linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.55)),
+        url("visitor.jpeg");
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 40px 25px;
+}
+
+.content {
+    width: 100%;
+    max-width: 1150px;
+
+    text-align: center;
+    color: white;
+}
+
+.welcome-text p {
+    font-size: 20px;
+    letter-spacing: 7px;
+    font-weight: bold;
+
+    margin-bottom: 18px;
+
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+}
+
+h1 {
+    font-size: 52px;
+    font-weight: 700;
+
+    margin-bottom: 12px;
+
+    text-shadow: 0 3px 10px rgba(0, 0, 0, 0.8);
+}
+
+.subtitle {
+    font-size: 18px;
+    margin-bottom: 45px;
+
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
+}
+
+.options {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+
+    gap: 25px;
+    flex-wrap: wrap;
+}
+
+.role-card {
+    width: 300px;
+    min-height: 200px;
+
+    padding: 28px 20px;
+
+    background: rgba(255, 255, 255, 0.90);
+
+    color: #222;
+
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 16px;
+
+    text-decoration: none;
+
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+
+    transition: all 0.3s ease;
+}
+
+.role-card:hover {
+    transform: translateY(-8px);
+
+    background: white;
+
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.35);
+}
+
+.icon {
+    font-size: 42px;
+    margin-bottom: 12px;
+}
+
+.role-card h2 {
+    margin-bottom: 10px;
+    font-size: 22px;
+}
+
+.role-card p {
+    color: #555;
+    line-height: 1.5;
+    font-size: 14px;
+}
+
+@media (max-width: 768px) {
+
+    .landing-page {
+        padding: 30px 15px;
+    }
+
+    h1 {
+        font-size: 34px;
+    }
+
+    .subtitle {
+        font-size: 15px;
+        margin-bottom: 30px;
+    }
+
+    .welcome-text p {
+        font-size: 16px;
+        letter-spacing: 5px;
+    }
+
+    .role-card {
+        width: 100%;
+        max-width: 350px;
+    }
+}
