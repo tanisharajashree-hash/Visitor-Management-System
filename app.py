@@ -1,6 +1,8 @@
+import os
 from flask import Flask, render_template, request, redirect, url_for, session
 from functools import wraps
 import mysql.connector
+
 
 app = Flask(__name__)
 app.secret_key = "visitor_management_secret"
