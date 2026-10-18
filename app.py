@@ -32,14 +32,15 @@ def login_required(f):
 @app.route("/logout")
 def logout():
     session.clear()
-    return redirect(url_for("login"))
+    return redirect(url_for("landing"))
 
-# MySQL Database Connection
 db = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="tanisha@2006",
-    database="visitor_management"
+    host=os.environ.get("DB_HOST"),
+    port=int(os.environ.get("DB_PORT", "3306")),
+    user=os.environ.get("DB_USER"),
+    password=os.environ.get("DB_PASSWORD"),
+    database=os.environ.get("DB_NAME"),
+    ssl_ca=os.path.join(os.path.dirname(__file__), "ca.pem")
 )
 
 @app.route("/login", methods=["GET", "POST"])
@@ -313,7 +314,7 @@ def user_visit_requests():
 @app.route("/user-logout")
 def user_logout():
     session.clear()
-    return redirect(url_for("user_login"))
+    return redirect(url_for("landing"))
 
 @app.route("/security-dashboard")
 @staff_required
@@ -355,7 +356,7 @@ def landing():
     return render_template("landing.html")
 
 @app.route("/dashboard")
-@login_required
+@admin_required
 def dashboard():
     role = session.get("role")
 
